@@ -81,11 +81,44 @@ def check_win(board, piece):
     Devuelve True si hay 4 en raya de la ficha indicada
     => Comprueba horizontal, vertical y diagonales
     """
-    result = 0
-    # horizontal
+    # horizontal (-)
+    for fila in range(ROWS): # recorre todas las filas
+        for columna in range(COLUMNS - 3): # empieza desde la columna n0 hasta la n3 para que no haya desbordamiento
+            if (board[fila][columna] == piece and
+                board[fila][columna + 1] == piece and
+                board[fila][columna + 2] == piece and
+                board[fila][columna + 3] == piece):
+                return True
     
-        
-    pass
+    # vertical (|)
+    for columna in range(COLUMNS): # recorre todas las columnas
+        for fila in range(ROWS - 3): # empieza desde la fila n0 hasta la n2 para que no haya desbordamiento
+            if(board[fila][columna] == piece and
+               board[fila + 1][columna] == piece and
+               board[fila + 2][columna] == piece and 
+               board[fila + 3][columna] == piece):
+                return True
+
+    # diagonal (\)
+    for fila in range(ROWS - 3): # empieza desde la fila n0 a la n2
+        for columna in range(COLUMNS - 3): # empieza desde la columna n0 a la n3
+            if (board[fila][columna] == piece and
+                board[fila + 1][columna + 1] == piece and
+                board[fila + 2][columna + 2] == piece and
+                board[fila + 3][columna + 3] == piece):
+                return True
+
+    # diagonal (/)
+    for fila in range(3, ROWS): # empieza desde la fila n3 hasta la última
+        for columna in range(COLUMNS-3): # empieza desde la columna n0 hasta la n3
+            if (board[fila][columna] == piece and
+                board[fila - 1][columna + 1] == piece and
+                board[fila - 2][columna + 2] == piece and
+                board[fila - 3][columna + 3] == piece):
+                return True
+
+    return False
+    
 
 def cpu_easy(board):
     """
