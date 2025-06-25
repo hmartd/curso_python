@@ -158,14 +158,27 @@ def puntuacion_posicion(board, piece):
     Evalúa cuán favorable es una posición para una ficha
     => Cuenta posibles líneas de 2, 3 o 4 en ventana
     """
-    pass
+    puntos = 0
+    
+    
 
 def evaluar_ventana(window, piece):
     """
     Evalúa una ventana de 4 celdas
     => Retorna puntuación según cuántas fichas haya en la ventana
     """
-    pass
+    puntos = 0
+
+    if window.count(piece) == 4:
+        puntos += 10
+    elif window.count(piece) == 3:
+        puntos += 6
+    elif window.count(piece) == 2:
+        puntos += 3
+    elif window.count(piece) == 1:
+        puntos += 1
+
+    return puntos
 
 def choose_difficulty(player_name):
     """Pide al usuario que elija dificultad"""
