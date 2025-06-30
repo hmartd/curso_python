@@ -133,7 +133,21 @@ def cpu_normal(board, cpu_piece, player_piece):
     CPU que intenta ganar o bloquear al jugador
     => Implementa la lógica de ataque y defensa básica
     """
-    pass
+    # ataque
+    for col in get_valid_columns(board):
+        copia = [fila[:] for fila in board]
+        insert_piece(copia, col, cpu_piece)
+        if check_win(copia, cpu_piece):
+            return col
+    
+    # defensa
+    for col in get_valid_columns(board):
+        copia = [fila[:] for fila in board]
+        insert_piece(copia, col, player_piece)
+        if check_win(copia, player_piece):
+            return col
+    
+    return cpu_easy(board)
 
 def cpu_hard(board, cpu_piece, player_piece):
     """
@@ -159,7 +173,32 @@ def puntuacion_posicion(board, piece):
     => Cuenta posibles líneas de 2, 3 o 4 en ventana
     """
     puntos = 0
+
+    # horizontal (-)
+    for fila in range(ROWS): 
+        for columna in range(COLUMNS - 3): 
+            window = [board[fila][columna + i] for i in range(4)]
+            puntos += evaluar_ventana(window, piece)
     
+    # vertical (|)
+    for columna in range(COLUMNS): 
+        for fila in range(ROWS - 3):
+            window = [board[fila + i][columna] for i in range(4)] 
+            puntos += evaluar_ventana(window, piece)
+            
+    # diagonal (\)
+    for fila in range(ROWS - 3): 
+        for columna in range(COLUMNS - 3): 
+            window = [board[fila + i][columna + i] for i in range(4)] 
+            puntos += evaluar_ventana(window, piece)
+
+    # diagonal (/)
+    for fila in range(3, ROWS):
+        for columna in range(COLUMNS-3):
+            window = [board[fila - i][columna - i] for i in range(4)] 
+            puntos += evaluar_ventana(window, piece) 
+    
+    return puntos
     
 
 def evaluar_ventana(window, piece):
@@ -169,14 +208,17 @@ def evaluar_ventana(window, piece):
     """
     puntos = 0
 
+    op_piece = "0"
+    
+
     if window.count(piece) == 4:
         puntos += 10
-    elif window.count(piece) == 3:
+    elif window.count(piece) == 3 and window.count('.') == 1:
         puntos += 6
-    elif window.count(piece) == 2:
+    elif window.count(piece) == 2 and window.count('.') == 2:
         puntos += 3
-    elif window.count(piece) == 1:
-        puntos += 1
+    elif window.count(op_piece) == 3 and window.count('.') == 1:
+        puntos -= 10
 
     return puntos
 
@@ -201,11 +243,64 @@ def game():
     cpu = "0"
     player_name = choose_name()
     difficulty = choose_difficulty(player_name)
-    shift = 0 # 
+    shift = 0 
     finish = False
 
     while not finish:
-        pass
+        clean_terminal()
+        print_board(board)
+        print()
+        if shift == 0: # turno del del jugador
+            while True:
+                try:
+                    columna = int(input(f'{player_name} ({player}) Elige columna (0-6): '))
+                    if valid_column(board, columna):
+                        break
+                    else:
+                        print("➜ [ERROR] Columna no válida")
+                except ValueError:
+                    print("➜ [ERROR] No es un número")
+            
+            insert_piece(board, columna, player)
+            if check_win(board, player):
+                clean_terminal()
+                print_board(board)
+                print(f'\n¡{player_name} ({player}) GANA!\nDificultad: [{difficulty}]')
+                finish = True
+            elif full_board(board):
+                clean_terminal()
+                print_board(board)
+                print("\n¡Empate!")
+                finish = True
+            else:
+                shift = 1
+        else:
+            print(f"CPU ({cpu}) [{difficulty}]...")
+            input("➜ Presiona ENTER para continuar...")
+            if difficulty == 'easy':
+                columna = cpu_easy(board)
+            elif difficulty == 'normal':
+                columna = cpu_normal(board, cpu, player)
+            else:
+                columna = cpu_hard(board, cpu, player)
+            
+            insert_piece(board, columna, cpu)
+            if check_win(board, cpu):
+                clean_terminal()
+                print_board(board)
+                print(f'\n¡CPU ({cpu} GANA!\nDificultad: [{difficulty}])')
+                finish = True
+            elif full_board(board):
+                clean_terminal()
+                print_board(board)
+                print("\n¡Empate!")
+                finish = True
+            else:
+                shift = 0
+    
+
+
+        
 
 
 if __name__ == "__main__":
