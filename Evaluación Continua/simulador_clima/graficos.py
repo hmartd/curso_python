@@ -37,11 +37,4 @@ def comparar_estaciones(lista_estaciones):
         
 
 
-bcn = clima.EstacionClimatica("Barcelona")
-md = clima.EstacionClimatica("Madrid")
-pa = clima.EstacionClimatica("París")
-ny = clima.EstacionClimatica("Nueva York")
 
-lista = [bcn, md, pa, ny]
-#graficar_temperaturas(bcn)
-comparar_estaciones(lista)
