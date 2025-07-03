@@ -28,7 +28,7 @@ def main():
         if respuesta.lower() == "si":
                 ciudad = input("Nombre ciudad: ")
                 for estacion in lista_estaciones:
-                    if estacion._nombre == ciudad.capitalize().strip():
+                    if estacion._nombre == ciudad.title().strip():
                         graficos.graficar_temperaturas(estacion)
                         found = True
                 if found == False:
